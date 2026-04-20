@@ -7,7 +7,7 @@ import { Eye, EyeOff, Mail, Lock, AlertCircle } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const LoginPage = () => {
-  const { theme } = useTheme();
+  const { } = useTheme();
   const [formData, setFormData] = useState({
     email: '',
     password: ''

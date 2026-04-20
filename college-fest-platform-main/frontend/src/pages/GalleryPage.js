@@ -4,7 +4,7 @@ import { useTheme } from '../context/ThemeContext';
 import { Search, Heart, Share2, Download, Maximize2 } from 'lucide-react';
 
 const GalleryPage = () => {
-  const { theme } = useTheme();
+  const { } = useTheme();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);

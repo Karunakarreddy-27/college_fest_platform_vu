@@ -33,6 +33,8 @@ const AdminDashboard = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showEventModal, setShowEventModal] = useState(false);
+  const [screenshotPreview, setScreenshotPreview] = useState(null);
+  const [screenshotPreviewError, setScreenshotPreviewError] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [eventForm, setEventForm] = useState({
     name: '',
@@ -186,6 +188,30 @@ const AdminDashboard = () => {
     } catch (error) {
       console.error('Error updating manual payment:', error);
     }
+  };
+
+  const openScreenshotPreview = (payment) => {
+    const screenshotDataUrl = payment?.metadata?.screenshotDataUrl;
+    if (!screenshotDataUrl || !screenshotDataUrl.startsWith('data:image/')) {
+      return;
+    }
+
+    const mimeMatch = screenshotDataUrl.match(/^data:(image\/[a-zA-Z0-9.+-]+);base64,/);
+    const extension = mimeMatch?.[1]?.split('/')[1]?.split('+')[0] || 'png';
+    const baseFileName = (payment?.gatewayTransactionId || payment?._id || 'payment_screenshot')
+      .toString()
+      .replace(/[^a-zA-Z0-9_-]/g, '_');
+
+    setScreenshotPreview({
+      dataUrl: screenshotDataUrl,
+      fileName: `${baseFileName}.${extension}`
+    });
+    setScreenshotPreviewError(false);
+  };
+
+  const closeScreenshotPreview = () => {
+    setScreenshotPreview(null);
+    setScreenshotPreviewError(false);
   };
 
   const exportData = async (type) => {
@@ -755,14 +781,13 @@ const AdminDashboard = () => {
                           </td>
                           <td className="py-3 px-4">
                             {payment.metadata?.screenshotDataUrl ? (
-                              <a
-                                href={payment.metadata.screenshotDataUrl}
-                                target="_blank"
-                                rel="noreferrer"
+                              <button
+                                type="button"
+                                onClick={() => openScreenshotPreview(payment)}
                                 className="text-neon-blue hover:text-neon-purple transition-colors"
                               >
                                 View
-                              </a>
+                              </button>
                             ) : (
                               <span className="text-gray-500">None</span>
                             )}
@@ -808,6 +833,71 @@ const AdminDashboard = () => {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Screenshot Preview Modal */}
+      {screenshotPreview && (
+        <motion.div
+          className="fixed inset-0 bg-black/85 flex items-center justify-center p-4 z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeScreenshotPreview}
+        >
+          <motion.div
+            className="glass rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] overflow-hidden"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold text-white">Payment Screenshot</h3>
+              <button
+                type="button"
+                onClick={closeScreenshotPreview}
+                className="px-3 py-1 glass rounded-lg hover:bg-white/10 transition-colors text-sm"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="rounded-lg bg-black/30 border border-dark-border p-3 max-h-[65vh] overflow-auto">
+              {!screenshotPreviewError ? (
+                <img
+                  src={screenshotPreview.dataUrl}
+                  alt="Payment proof"
+                  className="max-w-full h-auto mx-auto rounded-lg"
+                  onError={() => setScreenshotPreviewError(true)}
+                />
+              ) : (
+                <div className="text-center py-10">
+                  <p className="text-red-300 mb-3">Unable to render this screenshot.</p>
+                  <p className="text-gray-400 text-sm">
+                    The uploaded image data appears invalid or unsupported.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-4 flex items-center justify-end gap-3">
+              <a
+                href={screenshotPreview.dataUrl}
+                download={screenshotPreview.fileName}
+                className="px-4 py-2 bg-gradient-to-r from-neon-blue to-neon-purple text-white rounded-lg btn-glow text-sm"
+              >
+                Download
+              </a>
+              <button
+                type="button"
+                onClick={closeScreenshotPreview}
+                className="px-4 py-2 glass rounded-lg hover:bg-white/10 transition-colors text-sm"
+              >
+                Done
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
 
       {/* Event Modal */}
       {showEventModal && (

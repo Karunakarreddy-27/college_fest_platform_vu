@@ -17,8 +17,7 @@ import {
 
 const LandingPage = () => {
   const [timeLeft, setTimeLeft] = useState({});
-  const { theme } = useTheme();
-
+  const { } = useTheme();
   useEffect(() => {
     // Set fest date to April 11th 2026
     const festDate = new Date('2026-04-21T00:00:00');

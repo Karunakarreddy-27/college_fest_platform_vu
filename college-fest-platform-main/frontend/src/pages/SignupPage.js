@@ -7,7 +7,7 @@ import { Eye, EyeOff, Mail, Lock, User, Phone, Building, AlertCircle, CheckCircl
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const SignupPage = () => {
-  const { theme } = useTheme();
+  const { } = useTheme();
   const [formData, setFormData] = useState({
     name: '',
     email: '',

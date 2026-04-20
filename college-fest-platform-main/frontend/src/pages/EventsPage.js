@@ -21,7 +21,7 @@ import { getLocalGameImage } from '../utils/gameImages';
 const FEST_FEE_AMOUNT = 500;
 
 const EventsPage = () => {
-  const { theme } = useTheme();
+  const { } = useTheme();
   const [events, setEvents] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState([]);
   const [loading, setLoading] = useState(true);

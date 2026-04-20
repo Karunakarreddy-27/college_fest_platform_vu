@@ -384,7 +384,7 @@ For support and questions:
 
 - 📧 Email: support@techfest2026.com
 - 🌐 Website: https://techfest2026.com
-- 📱 Phone: +91 98765 43210
+- 📱 Phone: +91 80195 48729
 
 ---
 

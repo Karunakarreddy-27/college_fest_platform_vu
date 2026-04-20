@@ -184,13 +184,12 @@ const LoginPage = () => {
                 />
                 <span className="ml-2 text-sm text-gray-400">Remember me</span>
               </label>
-              <button 
-                type="button"
+              <Link
+                to="/forgot-password"
                 className="text-sm text-neon-blue hover:text-neon-purple transition-colors underline bg-transparent border-none p-0 cursor-pointer"
-                onClick={() => alert('Password reset will be available soon')}
               >
                 Forgot password?
-              </button>
+              </Link>
             </motion.div>
 
             {/* Submit Button */}
@@ -214,36 +213,6 @@ const LoginPage = () => {
               )}
             </motion.button>
           </form>
-
-          {/* Divider */}
-          <motion.div
-            className="relative my-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-          >
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-dark-border"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-transparent text-gray-400">Or continue with</span>
-            </div>
-          </motion.div>
-
-          {/* Social Login */}
-          <motion.div
-            className="grid grid-cols-2 gap-3"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-          >
-            <button className="flex items-center justify-center space-x-2 px-4 py-2 glass rounded-lg hover:bg-white/10 transition-colors">
-              <span className="text-sm">Google</span>
-            </button>
-            <button className="flex items-center justify-center space-x-2 px-4 py-2 glass rounded-lg hover:bg-white/10 transition-colors">
-              <span className="text-sm">GitHub</span>
-            </button>
-          </motion.div>
         </motion.div>
 
         {/* Sign Up Link */}

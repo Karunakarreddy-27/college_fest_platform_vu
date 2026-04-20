@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -10,6 +10,8 @@ import ThemeToggle from './components/ThemeToggle';
 import EventsPage from './pages/EventsPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import DashboardPage from './pages/DashboardPage';
 import PaymentPage from './pages/PaymentPage';
 import LandingPage from './pages/LandingPage';
@@ -18,6 +20,7 @@ import EventDetailPage from './pages/EventDetailPage';
 import ContactPage from './pages/ContactPage';
 import GalleryPage from './pages/GalleryPage';
 import AdminQRScanner from './pages/AdminQRScanner';
+import SupportPage from './pages/SupportPage';
 
 // Components
 import ProtectedRoute from './components/ProtectedRoute';
@@ -38,50 +41,56 @@ function App() {
         <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <div className="min-h-screen bg-themed-primary text-themed-primary relative overflow-x-hidden">
             <ParticleBackground />
-            
-            <ThemeToggle />
-            
-            <Navbar />
-            
-            <AnimatePresence mode="wait">
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/events" element={<EventsPage />} />
-                <Route path="/events/:id" element={<EventDetailPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/gallery" element={<GalleryPage />} />
-                
-                {/* Protected Routes */}
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                } />
-                
-                <Route path="/payment" element={
-                  <ProtectedRoute>
-                    <PaymentPage />
-                  </ProtectedRoute>
-                } />
-                
-                {/* Admin Routes */}
-                <Route path="/admin" element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                } />
-                <Route path="/qr-scanner" element={
-                  <AdminRoute>
-                    <AdminQRScanner />
-                  </AdminRoute>
-                } />
-              </Routes>
-            </AnimatePresence>
-            
-            <Footer />
+
+            <div className="relative z-10">
+              <ThemeToggle />
+              
+              <Navbar />
+              
+              <AnimatePresence mode="wait">
+                <Routes>
+                  {/* Public Routes */}
+                  <Route path="/" element={<LandingPage />} />
+                  <Route path="/events" element={<EventsPage />} />
+                  <Route path="/events/:id" element={<EventDetailPage />} />
+                  <Route path="/login" element={<LoginPage />} />
+                  <Route path="/signup" element={<SignupPage />} />
+                  <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                  <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/gallery" element={<GalleryPage />} />
+                  <Route path="/support" element={<Navigate to="/support/faq" replace />} />
+                  <Route path="/support/:topic" element={<SupportPage />} />
+                  
+                  {/* Protected Routes */}
+                  <Route path="/dashboard" element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  } />
+                  
+                  <Route path="/payment" element={
+                    <ProtectedRoute>
+                      <PaymentPage />
+                    </ProtectedRoute>
+                  } />
+                  
+                  {/* Admin Routes */}
+                  <Route path="/admin" element={
+                    <AdminRoute>
+                      <AdminDashboard />
+                    </AdminRoute>
+                  } />
+                  <Route path="/qr-scanner" element={
+                    <AdminRoute>
+                      <AdminQRScanner />
+                    </AdminRoute>
+                  } />
+                </Routes>
+              </AnimatePresence>
+              
+              <Footer />
+            </div>
           </div>
         </Router>
       </AuthProvider>

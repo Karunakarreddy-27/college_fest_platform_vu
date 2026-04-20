@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { 
   Mail, 
@@ -13,6 +14,8 @@ import {
   Users,
   Trophy
 } from 'lucide-react';
+
+const MotionRouterLink = motion(Link);
 
 const Footer = () => {
   const { theme } = useTheme();
@@ -32,10 +35,10 @@ const Footer = () => {
       { name: 'All Events', href: '/events' },
     ],
     Support: [
-      { name: 'FAQ', href: '#faq' },
-      { name: 'Terms & Conditions', href: '#terms' },
-      { name: 'Privacy Policy', href: '#privacy' },
-      { name: 'Help Center', href: '#help' },
+      { name: 'FAQ', href: '/support/faq' },
+      { name: 'Terms & Conditions', href: '/support/terms' },
+      { name: 'Privacy Policy', href: '/support/privacy' },
+      { name: 'Help Center', href: '/support/help-center' },
     ],
   };
 
@@ -139,13 +142,23 @@ const Footer = () => {
               <ul className="space-y-2">
                 {links.map((link) => (
                   <li key={link.name}>
-                    <motion.a
-                      href={link.href}
-                      className="text-gray-400 hover:text-neon-blue transition-colors duration-300"
-                      whileHover={{ x: 5 }}
-                    >
-                      {link.name}
-                    </motion.a>
+                    {link.href.startsWith('http') || link.href.startsWith('#') ? (
+                      <motion.a
+                        href={link.href}
+                        className="text-gray-400 hover:text-neon-blue transition-colors duration-300"
+                        whileHover={{ x: 5 }}
+                      >
+                        {link.name}
+                      </motion.a>
+                    ) : (
+                      <MotionRouterLink
+                        to={link.href}
+                        className="text-gray-400 hover:text-neon-blue transition-colors duration-300 inline-block"
+                        whileHover={{ x: 5 }}
+                      >
+                        {link.name}
+                      </MotionRouterLink>
+                    )}
                   </li>
                 ))}
               </ul>

@@ -409,21 +409,19 @@ const SignupPage = () => {
                 />
                 <span className="ml-2 text-sm text-gray-400">
                   I agree to the{' '}
-                  <button 
-                    type="button"
+                  <Link
+                    to="/support/terms"
                     className="text-neon-blue hover:text-neon-purple transition-colors underline bg-transparent border-none p-0 cursor-pointer"
-                    onClick={() => alert('Terms and Conditions will be available soon')}
                   >
                     Terms and Conditions
-                  </button>{' '}
+                  </Link>{' '}
                   and{' '}
-                  <button 
-                    type="button"
+                  <Link
+                    to="/support/privacy"
                     className="text-neon-blue hover:text-neon-purple transition-colors underline bg-transparent border-none p-0 cursor-pointer"
-                    onClick={() => alert('Privacy Policy will be available soon')}
                   >
                     Privacy Policy
-                  </button>
+                  </Link>
                 </span>
               </label>
             </motion.div>

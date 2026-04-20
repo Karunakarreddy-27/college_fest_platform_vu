@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 // @desc    Register user
 // @route   POST /api/auth/register
@@ -109,6 +111,144 @@ router.post('/login', async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message || 'Login failed'
+    });
+  }
+});
+
+// @desc    Request password reset
+// @route   POST /api/auth/forgotpassword
+// @access  Public
+router.post('/forgotpassword', async (req, res) => {
+  try {
+    const email = String(req.body?.email || '').trim().toLowerCase();
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide your email address'
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    // Keep response generic when user is not found.
+    if (!user) {
+      return res.status(200).json({
+        success: true,
+        message: 'If an account with that email exists, password reset instructions were sent.'
+      });
+    }
+
+    const resetToken = user.getResetPasswordToken();
+    await user.save({ validateBeforeSave: false });
+
+    const frontendBaseUrl = (process.env.FRONTEND_URL || 'http://localhost:3000').replace(/\/+$/, '');
+    const resetUrl = `${frontendBaseUrl}/reset-password/${resetToken}`;
+
+    const smtpHost = process.env.SMTP_HOST;
+    const smtpPort = process.env.SMTP_PORT;
+    const smtpUser = process.env.SMTP_USER;
+    const smtpPass = process.env.SMTP_PASS;
+
+    if (smtpHost && smtpPort && smtpUser && smtpPass) {
+      try {
+        const transporter = nodemailer.createTransport({
+          host: smtpHost,
+          port: Number(smtpPort),
+          secure: Number(smtpPort) === 465,
+          auth: {
+            user: smtpUser,
+            pass: smtpPass
+          }
+        });
+
+        const fromEmail = process.env.SMTP_FROM || smtpUser;
+        await transporter.sendMail({
+          from: fromEmail,
+          to: user.email,
+          subject: 'TechFest Password Reset',
+          text: `You requested a password reset. Use this link within 10 minutes: ${resetUrl}`,
+          html: `<p>You requested a password reset.</p><p>Use this link within 10 minutes:</p><p><a href="${resetUrl}">${resetUrl}</a></p>`
+        });
+
+        return res.status(200).json({
+          success: true,
+          message: 'Password reset instructions have been sent to your email.'
+        });
+      } catch (mailError) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpire = undefined;
+        await user.save({ validateBeforeSave: false });
+
+        console.error('Forgot password mail error:', mailError);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to send reset email. Please try again later.'
+        });
+      }
+    }
+
+    // Development fallback when SMTP is not configured.
+    return res.status(200).json({
+      success: true,
+      message: 'Email service is not configured. Use the reset link below.',
+      resetUrl,
+      resetToken
+    });
+  } catch (error) {
+    console.error('Forgot password error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to process forgot password request'
+    });
+  }
+});
+
+// @desc    Reset password using token
+// @route   PUT /api/auth/resetpassword/:resettoken
+// @access  Public
+router.put('/resetpassword/:resettoken', async (req, res) => {
+  try {
+    const { password } = req.body;
+
+    if (!password || password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password must be at least 6 characters long'
+      });
+    }
+
+    const resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(req.params.resettoken)
+      .digest('hex');
+
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() }
+    }).select('+password');
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired reset token'
+      });
+    }
+
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successful. Please login with your new password.'
+    });
+  } catch (error) {
+    console.error('Reset password error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to reset password'
     });
   }
 });

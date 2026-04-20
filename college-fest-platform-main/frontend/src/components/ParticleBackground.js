@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Float } from '@react-three/drei';
+import { Float } from '@react-three/drei';
 
 // Simple particle component
 function Particles() {
@@ -75,10 +75,10 @@ function FloatingSphere() {
 
 const ParticleBackground = () => {
   return (
-    <div className="fixed inset-0 z-0">
+    <div className="fixed inset-0 z-0 pointer-events-none">
       <Canvas
         camera={{ position: [0, 0, 10], fov: 75 }}
-        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}
+        style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}
       >
         <ambientLight intensity={0.3} />
         <pointLight position={[10, 10, 10]} intensity={1} color="#00d4ff" />
@@ -86,7 +86,6 @@ const ParticleBackground = () => {
         <Particles />
         <FloatingCube />
         <FloatingSphere />
-        <OrbitControls enableZoom={false} enablePan={false} />
       </Canvas>
     </div>
   );

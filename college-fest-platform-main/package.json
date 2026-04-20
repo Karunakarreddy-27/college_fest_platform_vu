@@ -1,0 +1,19 @@
+{
+  "name": "college-fest-platform",
+  "version": "1.0.0",
+  "description": "Futuristic College Fest Management Platform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd backend && npm start",
+    "client": "cd frontend && npm start",
+    "install-all": "cd backend && npm install && cd ../frontend && npm install",
+    "create-admin": "cd backend && npm run create-admin"
+  },
+  "keywords": ["college", "fest", "management", "react", "node"],
+  "author": "College Fest Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

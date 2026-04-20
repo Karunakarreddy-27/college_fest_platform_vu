@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frontend Test</title>
+</head>
+<body>
+    <h1>Frontend Connection Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testFrontend() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test API connection
+                console.log('Testing API connection...');
+                const response = await fetch('http://localhost:5001/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name: 'Frontend Test User',
+                        email: `frontend-test-${Date.now()}@example.com`,
+                        phone: '1234567890',
+                        college: 'Test College',
+                        password: 'password123'
+                    })
+                });
+                
+                const data = await response.json();
+                results.innerHTML = `
+                    <h2>Test Results:</h2>
+                    <p>API Status: ${response.status}</p>
+                    <p>Registration Success: ${data.success}</p>
+                    <p>Token: ${data.token ? 'Received' : 'Not received'}</p>
+                    <h3 style="color: green;">Frontend can connect to backend successfully!</h3>
+                `;
+                
+            } catch (error) {
+                results.innerHTML = `
+                    <h2>Test Results:</h2>
+                    <p style="color: red;">Error: ${error.message}</p>
+                    <p>Check if backend is running on port 5001</p>
+                `;
+            }
+        }
+        
+        // Run test when page loads
+        testFrontend();
+    </script>
+</body>
+</html>

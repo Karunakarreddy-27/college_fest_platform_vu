@@ -25,7 +25,7 @@ const app = express();
 app.use(helmet());
 
 // CORS configuration
-const allowedOrigins = [
+const localOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
   'http://localhost:3002',
@@ -33,11 +33,20 @@ const allowedOrigins = [
   'http://127.0.0.1:3001',
   'http://127.0.0.1:3002'
 ];
+const envOriginInput = [process.env.FRONTEND_URL, process.env.FRONTEND_URLS]
+  .filter(Boolean)
+  .join(',');
+const envOrigins = envOriginInput
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/+$/, ''))
+  .filter(Boolean);
+const allowedOrigins = [...new Set([...localOrigins, ...envOrigins])];
 
 app.use(cors({
   origin: (origin, callback) => {
     // Allow non-browser clients (curl/postman) and configured web origins.
-    if (!origin || allowedOrigins.includes(origin)) {
+    const normalizedOrigin = origin ? origin.replace(/\/+$/, '') : origin;
+    if (!normalizedOrigin || allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true);
     }
 
@@ -121,9 +130,13 @@ app.use('*', (req, res) => {
   });
 });
 
-// Start server
+// Start server only for local/non-serverless execution.
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+  });
+}
+
+module.exports = app;

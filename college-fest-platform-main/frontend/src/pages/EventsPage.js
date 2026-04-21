@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getLocalGameImage } from '../utils/gameImages';
+import { apiUrl } from '../utils/apiConfig';
 
 const FEST_FEE_AMOUNT = 500;
 
@@ -95,7 +96,7 @@ const EventsPage = () => {
   const fetchEvents = async () => {
     try {
       setFetchError('');
-      const response = await fetch('http://localhost:5000/api/events');
+      const response = await fetch(apiUrl('/events'));
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || `Failed to fetch events (HTTP ${response.status})`);
@@ -120,7 +121,7 @@ const EventsPage = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/events/categories/list');
+      const response = await fetch(apiUrl('/events/categories/list'));
       if (!response.ok) {
         return;
       }

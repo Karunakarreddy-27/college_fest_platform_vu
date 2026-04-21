@@ -119,7 +119,7 @@ const TOPIC_CONTENT = {
         body: 'For login/signup issues, verify your email and password and try again.',
         points: [
           'Use the latest browser version.',
-          'Ensure backend is running on port 5000.'
+          'Ensure the API URL is configured correctly for your environment.'
         ]
       },
       {

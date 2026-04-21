@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import { Mail, Phone, MapPin, Send, MessageSquare } from 'lucide-react';
+import { apiUrl } from '../utils/apiConfig';
 
 const ContactPage = () => {
   const { theme } = useTheme();
@@ -21,7 +22,7 @@ const ContactPage = () => {
     setSubmitError('');
 
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const response = await fetch(apiUrl('/contact'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

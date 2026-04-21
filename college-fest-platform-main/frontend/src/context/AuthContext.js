@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../utils/apiConfig';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,
 });
 
 // Auth context
@@ -109,7 +110,7 @@ export const AuthProvider = ({ children }) => {
           let errorMessage = 'Authentication failed';
 
           if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK') {
-            errorMessage = 'Server is not available on port 5000. Please start backend and retry.';
+            errorMessage = 'API server is not reachable. Please try again shortly.';
           } else if (error.response?.status === 401) {
             errorMessage = 'Session expired. Please login again.';
           } else if (error.response?.data?.message) {

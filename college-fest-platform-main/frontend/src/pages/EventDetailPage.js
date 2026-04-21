@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { getLocalGameImage } from '../utils/gameImages';
+import { apiUrl } from '../utils/apiConfig';
 
 const FEST_FEE_AMOUNT = 500;
 
@@ -41,7 +42,7 @@ const EventDetailPage = () => {
 
   const fetchEvent = useCallback(async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/events/${id}`);
+      const response = await fetch(apiUrl(`/events/${id}`));
       const data = await response.json();
       if (data.success) {
         setEvent(data.event);

@@ -72,7 +72,7 @@ const PaymentPage = () => {
       } else if (loadError.response?.status === 403) {
         setError('You do not have permission to access payment details.');
       } else if (loadError.code === 'ERR_NETWORK') {
-        setError('Backend is not reachable. Start backend on port 5000 and retry.');
+        setError('Payment service is not reachable right now. Please try again shortly.');
       } else if (loadError.response?.status === 404) {
         setError('Payment API route not found. Restart backend to load latest routes.');
       } else if (typeof loadError.response?.data === 'string' && loadError.response.data.trim()) {
@@ -213,7 +213,7 @@ const PaymentPage = () => {
       } else if (statusCode === 403) {
         setError(serverMessage || 'You do not have permission to submit payment proof.');
       } else if (submitError.code === 'ERR_NETWORK') {
-        setError('Backend is not reachable. Start backend on port 5000 and retry.');
+        setError('Payment service is not reachable right now. Please try again shortly.');
       } else if (statusCode === 404 || (serverMessage && serverMessage.toLowerCase().includes('route not found'))) {
         setError('Payment API route not found. Restart backend and try again.');
       } else if (statusCode === 413) {

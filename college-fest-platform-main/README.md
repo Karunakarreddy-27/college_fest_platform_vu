@@ -287,7 +287,9 @@ npm run build
 
 3. Set environment variables:
 ```
-REACT_APP_API_URL=https://your-backend-url.com
+REACT_APP_API_URL=https://your-backend-url.com/api
+# Optional: keep admin page limited to payment approvals only
+# REACT_APP_PAYMENT_APPROVAL_ONLY=true
 ```
 
 ### Backend Deployment (Heroku/Railway)
@@ -295,6 +297,12 @@ REACT_APP_API_URL=https://your-backend-url.com
 1. Set environment variables in your hosting provider
 2. Update the MongoDB URI to use your production database
 3. Deploy the backend application
+4. Run one-time setup commands on the deployed backend service shell:
+```bash
+cd backend
+npm run create-admin
+npm run seed:events
+```
 
 ### Database Deployment
 

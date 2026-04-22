@@ -22,14 +22,14 @@ import LoadingSpinner from '../components/LoadingSpinner';
 
 const AdminDashboard = () => {
   const { theme } = useTheme();
-  const paymentApprovalOnly = true;
+  const paymentApprovalOnly = process.env.REACT_APP_PAYMENT_APPROVAL_ONLY === 'true';
   const [analytics, setAnalytics] = useState(null);
   const [users, setUsers] = useState([]);
   const [events, setEvents] = useState([]);
   const [registrations, setRegistrations] = useState([]);
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('payments');
+  const [activeTab, setActiveTab] = useState(paymentApprovalOnly ? 'payments' : 'overview');
   const [searchTerm, setSearchTerm] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
   const [showEventModal, setShowEventModal] = useState(false);

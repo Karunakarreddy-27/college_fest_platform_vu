@@ -100,12 +100,7 @@ mongoose.connect(process.env.MONGODB_URI, {
   }
 
   try {
-    const result = await seedDefaultEvents({ onlyIfNoActiveEvents: true });
-
-    if (result.skipped) {
-      console.log(`Auto-seed skipped. Active events already present: ${result.totalActive}.`);
-      return;
-    }
+    const result = await seedDefaultEvents();
 
     console.log(`Auto-seed complete. Inserted: ${result.inserted}. Active events: ${result.totalActive}.`);
   } catch (seedError) {

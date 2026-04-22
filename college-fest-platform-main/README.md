@@ -299,7 +299,7 @@ REACT_APP_API_URL=https://your-backend-url.com/api
 
 1. Set environment variables in your hosting provider
 2. Update the MongoDB URI to use your production database
-3. (Optional) Set `AUTO_SEED_EVENTS=true` so backend inserts default events only when active events are empty
+3. (Optional) Set `AUTO_SEED_EVENTS=true` so backend upserts missing default events on startup
 4. Deploy the backend application
 5. If you want manual setup from your own machine (without paid shell), run:
 ```bash

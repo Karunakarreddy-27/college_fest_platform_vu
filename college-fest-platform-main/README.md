@@ -290,14 +290,18 @@ npm run build
 REACT_APP_API_URL=https://your-backend-url.com/api
 # Optional: keep admin page limited to payment approvals only
 # REACT_APP_PAYMENT_APPROVAL_ONLY=true
+# Optional: router mode override.
+# Unset = hash router in production, browser router in development.
+# REACT_APP_USE_HASH_ROUTER=true
 ```
 
 ### Backend Deployment (Heroku/Railway)
 
 1. Set environment variables in your hosting provider
 2. Update the MongoDB URI to use your production database
-3. Deploy the backend application
-4. Run one-time setup commands on the deployed backend service shell:
+3. (Optional) Set `AUTO_SEED_EVENTS=true` so backend inserts default events only when active events are empty
+4. Deploy the backend application
+5. If you want manual setup from your own machine (without paid shell), run:
 ```bash
 cd backend
 npm run create-admin

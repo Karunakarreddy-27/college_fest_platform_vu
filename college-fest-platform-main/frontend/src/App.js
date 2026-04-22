@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { BrowserRouter, HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -48,6 +48,12 @@ function ScrollToTop() {
 }
 
 function App() {
+  const hashRouterMode = String(process.env.REACT_APP_USE_HASH_ROUTER || '').trim().toLowerCase();
+  const useHashRouter = hashRouterMode
+    ? hashRouterMode === 'true'
+    : process.env.NODE_ENV === 'production';
+  const Router = useHashRouter ? HashRouter : BrowserRouter;
+
   useEffect(() => {
     // Add smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth';

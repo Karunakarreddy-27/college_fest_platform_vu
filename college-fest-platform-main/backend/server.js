@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const dotenv = require('dotenv');
 const path = require('path');
+const { seedDefaultEvents } = require('./utils/seedDefaultEvents');
 
 // Load environment variables
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -77,12 +78,39 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // MongoDB connection
+const autoSeedEvents = (() => {
+  const configuredValue = String(process.env.AUTO_SEED_EVENTS || '').trim().toLowerCase();
+
+  if (configuredValue) {
+    return configuredValue !== 'false';
+  }
+
+  return process.env.NODE_ENV === 'production';
+})();
+
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
-.then(() => {
+.then(async () => {
   console.log('Connected to MongoDB successfully');
+
+  if (!autoSeedEvents) {
+    return;
+  }
+
+  try {
+    const result = await seedDefaultEvents({ onlyIfNoActiveEvents: true });
+
+    if (result.skipped) {
+      console.log(`Auto-seed skipped. Active events already present: ${result.totalActive}.`);
+      return;
+    }
+
+    console.log(`Auto-seed complete. Inserted: ${result.inserted}. Active events: ${result.totalActive}.`);
+  } catch (seedError) {
+    console.error('Auto-seed failed:', seedError.message || seedError);
+  }
 })
 .catch((err) => {
   console.error('MongoDB connection error:', err);

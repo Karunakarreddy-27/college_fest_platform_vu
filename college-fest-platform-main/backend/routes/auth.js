@@ -5,12 +5,22 @@ const { protect } = require('../middleware/auth');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
+const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const STRONG_PASSWORD_MESSAGE = 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.';
+
 // @desc    Register user
 // @route   POST /api/auth/register
 // @access  Public
 router.post('/register', async (req, res) => {
   try {
     const { name, email, phone, college, password } = req.body;
+
+    if (!password || !STRONG_PASSWORD_REGEX.test(password)) {
+      return res.status(400).json({
+        success: false,
+        message: STRONG_PASSWORD_MESSAGE
+      });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });

@@ -6,6 +6,9 @@ import { useTheme } from '../context/ThemeContext';
 import { Eye, EyeOff, Mail, Lock, User, Phone, Building, AlertCircle, CheckCircle } from 'lucide-react';
 import LoadingSpinner from '../components/LoadingSpinner';
 
+const STRONG_PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+const STRONG_PASSWORD_MESSAGE = 'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.';
+
 const SignupPage = () => {
   const { } = useTheme();
   const [formData, setFormData] = useState({
@@ -64,13 +67,13 @@ const SignupPage = () => {
 
   const getPasswordStrengthColor = () => {
     if (passwordStrength <= 2) return 'bg-red-500';
-    if (passwordStrength <= 4) return 'bg-yellow-500';
+    if (passwordStrength <= 4 || !STRONG_PASSWORD_REGEX.test(formData.password)) return 'bg-yellow-500';
     return 'bg-green-500';
   };
 
   const getPasswordStrengthText = () => {
     if (passwordStrength <= 2) return 'Weak';
-    if (passwordStrength <= 4) return 'Medium';
+    if (passwordStrength <= 4 || !STRONG_PASSWORD_REGEX.test(formData.password)) return 'Medium';
     return 'Strong';
   };
 
@@ -102,8 +105,8 @@ const SignupPage = () => {
     } else if (!formData.password) {
       errorMessage = 'Password is required';
       isValid = false;
-    } else if (formData.password.length < 6) {
-      errorMessage = 'Password must be at least 6 characters long';
+    } else if (!STRONG_PASSWORD_REGEX.test(formData.password)) {
+      errorMessage = STRONG_PASSWORD_MESSAGE;
       isValid = false;
     } else if (!formData.confirmPassword) {
       errorMessage = 'Please confirm your password';
@@ -338,6 +341,9 @@ const SignupPage = () => {
                       style={{ width: `${(passwordStrength / 6) * 100}%` }}
                     />
                   </div>
+                  <p className="text-xs text-gray-400 mt-2">
+                    Use at least 8 characters with uppercase, lowercase, number, and special character.
+                  </p>
                 </div>
               )}
             </motion.div>
